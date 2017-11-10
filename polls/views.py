@@ -1,6 +1,9 @@
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.views import generic
+from django.http import (
+    HttpResponseRedirect, HttpResponse, Http404)
+from django.core.urlresolvers import reverse
 
 from polls.forms.question_form import QuestionForm
 from polls.models import Question
@@ -18,5 +21,8 @@ class CreateQuestion(generic.CreateView):
     model = Question
     template_name = 'polls/createquestion.html'
     form_class = QuestionForm
+
+    def get_success_url(self):
+            return reverse('polls:index')
 
 # Create your views here.
