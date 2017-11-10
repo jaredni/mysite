@@ -1,12 +1,14 @@
+from django.conf import settings
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.views import generic
 from django.http import (
     HttpResponseRedirect, HttpResponse, Http404)
-from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse, reverse_lazy
 
 from polls.forms.question_form import QuestionForm
-from polls.models import Question
+from polls.forms.choice_form import ChoiceForm
+from polls.models import Question, Choice
 
 
 class IndexView(generic.ListView):
@@ -21,13 +23,24 @@ class CreateQuestion(generic.CreateView):
     model = Question
     template_name = 'polls/createquestion.html'
     form_class = QuestionForm
-
-    def get_success_url(self):
-            return reverse('polls:index')
+    success_url = reverse_lazy('polls:index')
 
 
 class DetailView(generic.DetailView):
     model = Question
     template_name = 'polls/detail.html'
+
+
+class ResultView(generic.DetailView):
+    model = Question
+    template_name = 'polls/result.html'
+
+    def post(self, request, *args, **kwargs):
+        choice = Choice.objects.get(pk=self.request.POST['choice'])
+        choice.votes += settings.VOTE_VALUE
+        choice.save()
+        return super(ResultView, self).get(request, *args, **kwargs)
+        # return HttpResponseRedirect(reverse(
+        #     'polls:result', args=(self.get_object().pk,)))
 
 # Create your views here.
