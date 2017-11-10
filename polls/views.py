@@ -25,4 +25,9 @@ class CreateQuestion(generic.CreateView):
     def get_success_url(self):
             return reverse('polls:index')
 
+
+class DetailView(generic.DetailView):
+    model = Question
+    template_name = 'polls/detail.html'
+
 # Create your views here.
