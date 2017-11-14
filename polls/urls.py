@@ -11,4 +11,6 @@ urlpatterns = [
         views.ResultView.as_view(), name='result'),
     url(r'^(?P<pk>[0-9]+)/createchoice/$',
         views.CreateChoice.as_view(), name='createchoice'),
+    url(r'^(?P<pk>[0-9]+)/updateQuestion/$',
+        views.UpdateQuestion.as_view(), name='updatequestion'),
 ]
