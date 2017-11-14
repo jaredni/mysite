@@ -26,6 +26,13 @@ class CreateQuestion(generic.CreateView):
     success_url = reverse_lazy('polls:index')
 
 
+class UpdateQuestion(generic.UpdateView):
+    model = Question
+    template_name = 'polls/updatequestion.html'
+    form_class = QuestionForm
+    success_url = reverse_lazy('polls:index')
+
+
 class CreateChoice(generic.DetailView):
     model = Question
     template_name = 'polls/createchoice.html'
