@@ -1,4 +1,3 @@
-from django.conf import settings
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.views import generic
@@ -10,6 +9,7 @@ from polls.forms.question_form import QuestionForm
 from polls.forms.choice_form import ChoiceForm
 from polls.models import Question, Choice
 
+from django.conf import settings
 
 class IndexView(generic.ListView):
     template_name = 'polls/index.html'
@@ -25,7 +25,6 @@ class CreateQuestion(generic.CreateView):
     form_class = QuestionForm
     success_url = reverse_lazy('polls:index')
 
-
 class DetailView(generic.DetailView):
     model = Question
     template_name = 'polls/detail.html'
@@ -36,11 +35,16 @@ class ResultView(generic.DetailView):
     template_name = 'polls/result.html'
 
     def post(self, request, *args, **kwargs):
-        choice = Choice.objects.get(pk=self.request.POST['choice'])
-        choice.votes += settings.VOTE_VALUE
-        choice.save()
-        return super(ResultView, self).get(request, *args, **kwargs)
-        # return HttpResponseRedirect(reverse(
-        #     'polls:result', args=(self.get_object().pk,)))
+        q = Question.objects.get(pk=self.request.POST['question'])
+        print q.id
+        try:
+            choice = Choice.objects.get(pk=self.request.POST['choice'])
+        except (KeyError, Choice.DoesNotExist):
+            print 'no choice selected'
+            return HttpResponseRedirect(reverse('polls:detail', args=(q.id,)))
+        else:
+            choice.votes += settings.VOTE_VALUE
+            choice.save()
+            return super(ResultView, self).get(request, *args, **kwargs)
 
 # Create your views here.
