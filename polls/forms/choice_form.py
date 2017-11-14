@@ -7,4 +7,4 @@ class ChoiceForm(forms.ModelForm):
 
     class Meta:
         model = Choice
-        fields = '__all__'
+        exclude = ('question', 'votes')
