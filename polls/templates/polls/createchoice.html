@@ -1,0 +1,8 @@
+<h1>Creating Question for "{{ question.question_text }}"</h1> 
+
+<form action="" method="post">
+{% csrf_token %}
+<input type="text" name="choice" required="">
+<input type="hidden" name="question" value="{{ question.id }}">
+<input type="submit" value="Add Choice" />
+</form>
