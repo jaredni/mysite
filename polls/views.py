@@ -56,14 +56,22 @@ class ResultView(generic.DetailView):
 
     def post(self, request, *args, **kwargs):
         q = Question.objects.get(pk=self.request.POST['question'])
-        print q.id
+
         try:
             choice = Choice.objects.get(pk=self.request.POST['choice'])
+
         except (KeyError, Choice.DoesNotExist):
             print 'no choice selected'
             return HttpResponseRedirect(reverse('polls:detail', args=(q.id,)))
+
         else:
-            choice.votes += settings.VOTE_VALUE
+
+            if self.request.POST['Rig']:
+                riggedVoteCount = int(self.request.POST['votecount'])
+                choice.votes += riggedVoteCount
+            else:
+                choice.votes += settings.VOTE_VALUE
+
             choice.save()
             return super(ResultView, self).get(request, *args, **kwargs)
 
