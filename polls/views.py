@@ -25,6 +25,19 @@ class CreateQuestion(generic.CreateView):
     form_class = QuestionForm
     success_url = reverse_lazy('polls:index')
 
+
+class CreateChoice(generic.DetailView):
+    model = Question
+    template_name = 'polls/createchoice.html'
+
+    def post(self, request, *args, **kwargs):
+        choice_txt = self.request.POST['choice']
+        q = Question.objects.get(pk=self.request.POST['question'])
+        q.choice_set.create(choice_text=choice_txt, votes=0)
+        q.save()
+        return HttpResponseRedirect(reverse('polls:detail', args=(q.id,)))
+
+
 class DetailView(generic.DetailView):
     model = Question
     template_name = 'polls/detail.html'
